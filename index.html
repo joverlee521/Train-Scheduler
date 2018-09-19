@@ -36,14 +36,14 @@
                                 <th scope="col">Minutes Away</th>
                               </tr>
                             </thead>
-                            <tbody>
-                              <tr>
+                            <tbody id="trainSchedule">
+                              <!-- <tr>
                                 <td scope="row">Polar Express</td>
                                 <td>North Pole</td>
                                 <td>Otto</td>
                                 <td>@mdo</td>
                                 <td>4</td>
-                              </tr>
+                              </tr> -->
                             </tbody>
                         </table>
                     </div>
@@ -73,7 +73,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="frequencyInput"><strong>Frequency (min)</strong></label>
-                                <input type="number" min="1" max="60" class="form-control" id="frequencyInput">
+                                <input type="number" min="1" max="1440" class="form-control" id="frequencyInput">
                             </div>
                             <button type="submit" class="btn btn-secondary" id="submitInput">Submit</button>
                         </form>
@@ -89,6 +89,9 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/es-us.js"></script>
     <!-- Custom JS -->
     <script src="assets/javascript/app.js"></script>
   </body>
