@@ -23,7 +23,7 @@ var amPM;
 var minute;
 var newTime = 0;
 
-function convertTime(time){
+function convertTo12Time(time){
     hours24 = parseInt(time.substring(0,2));
     hour = ((hours24 + 11) % 12) + 1;
     minute = time.substring(2);
@@ -38,7 +38,7 @@ function convertTime(time){
 
 function nextTrain(){
     if(parseInt(firstTime) > parseInt(now)){
-        return convertTime(firstTime);
+        return convertTo12Time(firstTime);
     }
     else if(parseInt(firstTime) === parseInt(now)){
         return("NOW!")
@@ -46,13 +46,13 @@ function nextTrain(){
     else{
         newTime = moment(firstTime, "HHmm").add(frequency, "m").format("HHmm");
         if(parseInt(newTime) > parseInt(now)){
-            return convertTime(newTime);
+            return convertTo12Time(newTime);
         }
         else{
             while(parseInt(newTime) < parseInt(now)){
             newTime = moment(newTime, "HHmm").add(frequency, "m").format("HHmm");
                 if(parseInt(newTime) > parseInt(now)){
-                    return convertTime(newTime);
+                    return convertTo12Time(newTime);
                 }
             }
         }
@@ -77,15 +77,36 @@ function minutesTillTrain(){
     }
 }
 
+function checkFirstTimeValidity(){
+    var input = $("#firstTimeInput");
+    if(!input[0].checkValidity()){
+        input.popover({
+            content: "Please enter valid input",
+            placement: "top"
+        });
+        input.popover("show");
+        setTimeout(function(){input.popover("hide")}, 1500)
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
 $("#submitInput").on("click", function(){
     event.preventDefault();
+    if(!checkFirstTimeValidity()){
+        console.log("invalid input");
+        return;
+    }
+    console.log("valid input");
     trainName = $("#trainNameInput").val();
     destination = $("#destinationInput").val();
     firstTime = ($("#firstTimeInput").val()).replace(/:/g,"");
     frequency = parseInt($("#frequencyInput").val());
     nextArrival = nextTrain();
     minutesAway = minutesTillTrain();
-    console.log(nextArrival);
+    console.log(firstTime);
     database.ref().push({
         trainName: trainName,
         destination: destination,
