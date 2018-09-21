@@ -17,11 +17,14 @@ var frequency = 0;
 var nextArrival = 0;
 var minutesAway = 0;
 var now = moment().format("HHmm");
+var today = moment().format("MMDDYYYY");
 var hours24;
 var hour;
 var amPM;
 var minute;
 var newTime = 0;
+var endOfDay = moment().endOf("day").diff(moment(),"minutes");
+
 
 function convertTo12Time(time){
     hours24 = parseInt(time.substring(0,2));
@@ -38,9 +41,6 @@ function convertTo12Time(time){
 
 function nextTrain(){
     var timeDifference = moment(firstTime, "HHmm").diff(moment(now, "HHmm"), "minutes");
-    var newTimeDifference = moment(newTime, "HHmm").diff(moment(now, "HHmm"), "minutes");
-    var tillEndOfDay = moment().endOf("day").diff(moment(),"minutes")/frequency;
-    var timesAdded = 1;
     if(timeDifference > 0){
         return convertTo12Time(firstTime);
     }
@@ -48,20 +48,17 @@ function nextTrain(){
         return("NOW!")
     }
     else{
-        newTime = moment(firstTime, "HHmm").add(frequency, "m").format("HHmm");
+        newTime = moment(firstTime + " " + today, "HHmm MMDDYYYY").add(frequency, "m").format("HHmm MMDDYYYY");
+        var newTimeDifference = moment(newTime, "HHmm MMDDYYYY").diff(moment(), "minutes");
         if(newTimeDifference > 0){
-            return convertTo12Time(newTime);
+            return convertTo12Time(moment(newTime, "HHmm MMDDYYYY").format("HHmm"));
         }
         else{
             while(newTimeDifference < 0){
-            newTime = moment(newTime, "HHmm").add(frequency, "m").format("HHmm");
-            timesAdded++;
-            console.log(newTime)
-                if(timesAdded > tillEndOfDay){
-                    return (convertTo12Time(firstTime) + " tomorrow");
-                }
-                else if(moment(newTime, "HHmm").diff(moment(now, "HHmm"), "minutes") > 0){
-                    return convertTo12Time(newTime);
+                newTime = moment(newTime, "HHmm MMDDYYYY").add(frequency, "m").format("HHmm MMDDYYYY");
+                newTimeDifference = moment(newTime, "HHmm MMDDYYYY").diff(moment(), "minutes");
+                if(newTimeDifference > 0){
+                    return convertTo12Time(moment(newTime, "HHmm MMDDYYYY").format("HHmm"));
                 }
             }
         }
@@ -69,19 +66,16 @@ function nextTrain(){
 }
 
 function minutesTillTrain(){
-    if(parseInt(firstTime) > parseInt(now)){
-        var firstMoment = moment(firstTime, "HHmm");
-        var secondMoment = moment(now,"HHmm");
-        var duration = moment.duration(firstMoment - secondMoment).asMinutes();
+    var timeDifference = moment(firstTime, "HHmm").diff(moment(), "minutes");
+    if(timeDifference > 0){
+        var duration = moment(firstTime, "HHmm").diff(moment(),"minutes");
         return duration;
     }
-    else if(parseInt(firstTime === parseInt(now))){
+    else if(timeDifference === 0){
         return("NONE!");
     }
     else {
-        var firstMoment = moment(newTime, "HHmm");
-        var secondMoment = moment(now, "HHmm");
-        var duration = moment.duration(firstMoment-secondMoment).asMinutes();
+        var duration = moment(newTime, "HHmm MMDDYYYY").diff(moment(), "minutes");
         return duration;
     }
 }
@@ -114,6 +108,7 @@ $("#submitInput").on("click", function(){
     nextArrival = nextTrain();
     minutesAway = minutesTillTrain();
     console.log(nextArrival);
+    console.log(minutesAway);
     // database.ref().push({
     //     trainName: trainName,
     //     destination: destination,
