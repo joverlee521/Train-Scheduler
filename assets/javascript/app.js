@@ -28,30 +28,39 @@ function convertTo12Time(time){
     hour = ((hours24 + 11) % 12) + 1;
     minute = time.substring(2);
     if(hours24 > 11){
-        amPM = "pm"
+        amPM = "PM"
     }
     else{
-        amPM = "am"
+        amPM = "AM"
     }
-    return(hour + ":" + minute + amPM);
+    return(hour + ":" + minute + " " + amPM);
 }
 
 function nextTrain(){
-    if(parseInt(firstTime) > parseInt(now)){
+    var timeDifference = moment(firstTime, "HHmm").diff(moment(now, "HHmm"), "minutes");
+    var newTimeDifference = moment(newTime, "HHmm").diff(moment(now, "HHmm"), "minutes");
+    var tillEndOfDay = moment().endOf("day").diff(moment(),"minutes")/frequency;
+    var timesAdded = 1;
+    if(timeDifference > 0){
         return convertTo12Time(firstTime);
     }
-    else if(parseInt(firstTime) === parseInt(now)){
+    else if(timeDifference === 0){
         return("NOW!")
     }
     else{
         newTime = moment(firstTime, "HHmm").add(frequency, "m").format("HHmm");
-        if(parseInt(newTime) > parseInt(now)){
+        if(newTimeDifference > 0){
             return convertTo12Time(newTime);
         }
         else{
-            while(parseInt(newTime) < parseInt(now)){
+            while(newTimeDifference < 0){
             newTime = moment(newTime, "HHmm").add(frequency, "m").format("HHmm");
-                if(parseInt(newTime) > parseInt(now)){
+            timesAdded++;
+            console.log(newTime)
+                if(timesAdded > tillEndOfDay){
+                    return (convertTo12Time(firstTime) + " tomorrow");
+                }
+                else if(moment(newTime, "HHmm").diff(moment(now, "HHmm"), "minutes") > 0){
                     return convertTo12Time(newTime);
                 }
             }
@@ -96,24 +105,22 @@ function checkFirstTimeValidity(){
 $("#submitInput").on("click", function(){
     event.preventDefault();
     if(!checkFirstTimeValidity()){
-        console.log("invalid input");
         return;
     }
-    console.log("valid input");
     trainName = $("#trainNameInput").val();
     destination = $("#destinationInput").val();
     firstTime = ($("#firstTimeInput").val()).replace(/:/g,"");
     frequency = parseInt($("#frequencyInput").val());
     nextArrival = nextTrain();
     minutesAway = minutesTillTrain();
-    console.log(firstTime);
-    database.ref().push({
-        trainName: trainName,
-        destination: destination,
-        frequency: frequency,
-        nextArrival: nextArrival,
-        minutesAway: minutesAway
-    });
+    console.log(nextArrival);
+    // database.ref().push({
+    //     trainName: trainName,
+    //     destination: destination,
+    //     frequency: frequency,
+    //     nextArrival: nextArrival,
+    //     minutesAway: minutesAway
+    // });
     $("#trainNameInput").val("");
     $("#destinationInput").val("");
     $("#firstTimeInput").val("");
@@ -128,6 +135,9 @@ database.ref().on("child_added", function(data){
     var newFrequency = $("<td>").text(data.val().frequency);
     var newArrival = $("<td>").text(data.val().nextArrival);
     var newMinutes = $("<td>").text(data.val().minutesAway);
+    var newKey = data.key;
+    newRow.attr("data-key", newKey);
+    console.log(data.key);
     newRow.append(newTrainName,newDestination,newFrequency, newArrival, newMinutes);
     $("#trainSchedule").append(newRow);
 }, function(error){
