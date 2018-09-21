@@ -37,13 +37,6 @@
                               </tr>
                             </thead>
                             <tbody id="trainSchedule">
-                              <!-- <tr>
-                                <td scope="row">Polar Express</td>
-                                <td>North Pole</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                              </tr> -->
                             </tbody>
                         </table>
                     </div>
@@ -73,11 +66,30 @@
                             </div>
                             <div class="form-group">
                                 <label for="frequencyInput"><strong>Frequency (min)</strong></label>
-                                <input type="number" min="1" max="1440" class="form-control" id="frequencyInput">
+                                <input type="number" min="1" class="form-control" id="frequencyInput">
                             </div>
                             <button type="submit" class="btn btn-secondary" id="submitInput">Submit</button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="no-input-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Missing Input!</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Please fill out all sections.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

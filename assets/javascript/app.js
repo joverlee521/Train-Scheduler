@@ -16,14 +16,12 @@ var firstTime = 0;
 var frequency = 0;
 var nextArrival = 0;
 var minutesAway = 0;
-var now = moment().format("HHmm");
 var today = moment().format("MMDDYYYY");
 var hours24;
 var hour;
 var amPM;
 var minute;
 var newTime = 0;
-var endOfDay = moment().endOf("day").diff(moment(),"minutes");
 
 
 function convertTo12Time(time){
@@ -40,7 +38,7 @@ function convertTo12Time(time){
 }
 
 function nextTrain(){
-    var timeDifference = moment(firstTime, "HHmm").diff(moment(now, "HHmm"), "minutes");
+    var timeDifference = moment(firstTime, "HHmm").diff(moment(), "minutes");
     if(timeDifference > 0){
         return convertTo12Time(firstTime);
     }
@@ -80,6 +78,19 @@ function minutesTillTrain(){
     }
 }
 
+function checkInputPresent(){
+    trainName = $("#trainNameInput").val().trim();
+    destination = $("#destinationInput").val().trim();
+    firstTime = ($("#firstTimeInput").val()).trim().replace(/:/g,"");
+    frequency = $("#frequencyInput").val().trim();
+    if(trainName === "" || destination === "" || firstTime === "" || frequency === ""){
+        console.log("no input");
+        $("#no-input-modal").modal();
+        return false;
+    }
+    else{return true}
+}
+
 function checkFirstTimeValidity(){
     var input = $("#firstTimeInput");
     if(!input[0].checkValidity()){
@@ -98,6 +109,9 @@ function checkFirstTimeValidity(){
 
 $("#submitInput").on("click", function(){
     event.preventDefault();
+    if(!checkInputPresent()){
+        return;
+    }
     if(!checkFirstTimeValidity()){
         return;
     }
