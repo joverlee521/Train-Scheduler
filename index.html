@@ -8,6 +8,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <!-- Firebase Authentication -->
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.css" />
   </head>
   <body>
     <!-- Jumbotron -->
@@ -15,6 +18,20 @@
         <div class="container text-center">
           <h1 class="display-4">Train Schedule</h1>
           <p class="lead">Wherever you're going, there's always a train.</p>
+        </div>
+    </div>
+    <!-- Sign-In -->
+    <div class="modal" tabindex="-1" role="dialog" id="sign-in-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Welcome to the Train Scheduler!</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="firebaseui-auth-container"></div>
+                    <div id="loader">Loading...</div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Main Content -->
