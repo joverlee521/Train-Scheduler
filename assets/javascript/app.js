@@ -111,6 +111,7 @@ function displayData(data){
     var newRow = $("<tr class='data-row'>");
     var newTrainName = $("<td>").text(data.val().trainName);
     var newDestination = $("<td>").text(data.val().destination);
+    var newFirstTime = $("<td>").text(convertTo12Time(data.val().firstTrain));
     var newFrequency = $("<td>").text(data.val().frequency);
     var newArrival = $("<td>").text(data.val().nextArrival);
     var newMinutes = $("<td>").text(data.val().minutesAway);
@@ -118,7 +119,7 @@ function displayData(data){
     var newKey = data.key;
     deleteButton.attr("data-key", newKey);
     newRow.attr("id", newKey);
-    newRow.append(newTrainName,newDestination,newFrequency, newArrival, newMinutes, deleteButton);
+    newRow.append(newTrainName,newDestination, newFirstTime, newFrequency, newArrival, newMinutes, deleteButton);
     $("#trainSchedule").append(newRow);
 }
 
@@ -173,8 +174,8 @@ function updateData(){
             var newMinutesAway = minutesTillTrain(storedFirstTime);
             database.ref(key).child("nextArrival").set(newNextArrival);
             database.ref(key).child("minutesAway").set(newMinutesAway);
-            $(that)[0].children[3].innerHTML = newNextArrival;
-            $(that)[0].children[4].innerHTML = newMinutesAway;
+            $(that)[0].children[4].innerHTML = newNextArrival;
+            $(that)[0].children[5].innerHTML = newMinutesAway;
         });
     });
 }
