@@ -37,7 +37,7 @@ function convertTo12Time(time){
     return(hour + ":" + minute + " " + amPM);
 }
 
-function nextTrain(){
+function nextTrain(firstTime, frequency){
     var timeDifference = moment(firstTime, "HHmm").diff(moment(), "minutes");
     if(timeDifference > 0){
         return convertTo12Time(firstTime);
@@ -46,6 +46,7 @@ function nextTrain(){
         return("NOW!")
     }
     else{
+        
         newTime = moment(firstTime + " " + today, "HHmm MMDDYYYY").add(frequency, "m").format("HHmm MMDDYYYY");
         var newTimeDifference = moment(newTime, "HHmm MMDDYYYY").diff(moment(), "minutes");
         if(newTimeDifference > 0){
@@ -63,7 +64,7 @@ function nextTrain(){
     }
 }
 
-function minutesTillTrain(){
+function minutesTillTrain(firstTime){
     var timeDifference = moment(firstTime, "HHmm").diff(moment(), "minutes");
     if(timeDifference > 0){
         var duration = moment(firstTime, "HHmm").diff(moment(),"minutes");
@@ -84,15 +85,14 @@ function checkInputPresent(){
     firstTime = ($("#firstTimeInput").val()).trim().replace(/:/g,"");
     frequency = $("#frequencyInput").val().trim();
     if(trainName === "" || destination === "" || firstTime === "" || frequency === ""){
-        console.log("no input");
         $("#no-input-modal").modal();
         return false;
     }
     else{return true}
 }
 
-function checkFirstTimeValidity(){
-    var input = $("#firstTimeInput");
+function checkValidity(check){
+    var input = $(check);
     if(!input[0].checkValidity()){
         input.popover({
             content: "Please enter valid input",
@@ -107,50 +107,82 @@ function checkFirstTimeValidity(){
     }
 }
 
+function displayData(data){
+    var newRow = $("<tr class='data-row'>");
+    var newTrainName = $("<td>").text(data.val().trainName);
+    var newDestination = $("<td>").text(data.val().destination);
+    var newFrequency = $("<td>").text(data.val().frequency);
+    var newArrival = $("<td>").text(data.val().nextArrival);
+    var newMinutes = $("<td>").text(data.val().minutesAway);
+    var deleteButton = $("<button class='my-2 delete-button'>").text("X");
+    var newKey = data.key;
+    deleteButton.attr("data-key", newKey);
+    newRow.attr("id", newKey);
+    newRow.append(newTrainName,newDestination,newFrequency, newArrival, newMinutes, deleteButton);
+    $("#trainSchedule").append(newRow);
+}
+
+$(document).on("click",".delete-button", function(){
+    var thisKey = $(this).attr("data-key");
+    database.ref().child(thisKey).remove();
+    $("#" + thisKey).remove();
+});
+
 $("#submitInput").on("click", function(){
     event.preventDefault();
     if(!checkInputPresent()){
         return;
     }
-    if(!checkFirstTimeValidity()){
+    if(!checkValidity("#firstTimeInput")){
+        return;
+    }
+    if(!checkValidity("#frequencyInput")){
         return;
     }
     trainName = $("#trainNameInput").val();
     destination = $("#destinationInput").val();
     firstTime = ($("#firstTimeInput").val()).replace(/:/g,"");
     frequency = parseInt($("#frequencyInput").val());
-    nextArrival = nextTrain();
-    minutesAway = minutesTillTrain();
-    console.log(nextArrival);
-    console.log(minutesAway);
-    // database.ref().push({
-    //     trainName: trainName,
-    //     destination: destination,
-    //     frequency: frequency,
-    //     nextArrival: nextArrival,
-    //     minutesAway: minutesAway
-    // });
+    nextArrival = nextTrain(firstTime);
+    minutesAway = minutesTillTrain(firstTime);
+    var newData = {
+        trainName: trainName,
+        destination: destination,
+        frequency: frequency,
+        firstTrain: firstTime,
+        nextArrival: nextArrival,
+        minutesAway: minutesAway
+    }
+    database.ref().push(newData);
     $("#trainNameInput").val("");
     $("#destinationInput").val("");
     $("#firstTimeInput").val("");
     $("#frequencyInput").val("");
-})
+});
+
+function updateData(){
+    console.log("update data");
+    $(".data-row").each(function(){
+        var that = this
+        var key = $(that).attr("id");
+        var storedFirstTime;
+        database.ref(key).once("value").then(function(data){
+            storedFirstTime = data.val().firstTrain;
+            storedFrequency = data.val().frequency;
+            var newNextArrival = nextTrain(storedFirstTime, storedFrequency);
+            var newMinutesAway = minutesTillTrain(storedFirstTime);
+            database.ref(key).child("nextArrival").set(newNextArrival);
+            database.ref(key).child("minutesAway").set(newMinutesAway);
+            $(that)[0].children[3].innerHTML = newNextArrival;
+            $(that)[0].children[4].innerHTML = newMinutesAway;
+        });
+    });
+}
 
 database.ref().on("child_added", function(data){
-    console.log(data.val());
-    var newRow = $("<tr>");
-    var newTrainName = $("<td>").text(data.val().trainName);
-    var newDestination = $("<td>").text(data.val().destination);
-    var newFrequency = $("<td>").text(data.val().frequency);
-    var newArrival = $("<td>").text(data.val().nextArrival);
-    var newMinutes = $("<td>").text(data.val().minutesAway);
-    var newKey = data.key;
-    newRow.attr("data-key", newKey);
-    console.log(data.key);
-    newRow.append(newTrainName,newDestination,newFrequency, newArrival, newMinutes);
-    $("#trainSchedule").append(newRow);
+   displayData(data);
 }, function(error){
-    console.log("There was an error " + error.code);
-})
+   console.log("There was an error " + error.code);
+});
 
-
+var updateFirebase = setInterval(updateData, 60000);
