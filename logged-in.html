@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Train Scheduler</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <!-- Firebase Authentication -->
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.css" />
+  </head>
+  <body>
+    <!-- Jumbotron -->
+    <div class="jumbotron jumbotron-fluid py-3">
+        <div class="container text-center">
+          <h1 class="display-4">Train Schedule</h1>
+          <p class="lead">Wherever you're going, there's always a train.</p>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row my-2">
+            <div class="col">
+                <!-- Table of Train Schedule -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Current Train Schedule</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th scope="col">Train Name</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">First Train</th>
+                                <th scope="col">Frequencey (min)</th>
+                                <th scope="col">Next Arrival</th>
+                                <th scope="col">Minutes Away</th>
+                                <th scope="col"></th>
+                              </tr>
+                            </thead>
+                            <!-- Where Firebase data will be appended to schedule-->
+                            <tbody id="trainSchedule">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-4">
+            <div class="col">
+                <!-- Form to collect user's input -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Your Train</h5> 
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="trainNameInput"><strong>Train Name</strong></label>
+                                <input type="text" class="form-control" id="trainNameInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="destinationInput"><strong>Destination</strong></label>
+                                <input type="text" class="form-control" id="destinationInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="firstTImeInput"><strong>First Train Time (HH:mm - military time)</strong></label>
+                                <input type="text" pattern="^([01]\d|2[0-3]):?([0-5]\d)$"
+                                class="form-control" id="firstTimeInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="frequencyInput"><strong>Frequency (min)</strong></label>
+                                <input type="number" min="1" class="form-control" id="frequencyInput">
+                            </div>
+                            <button type="submit" class="btn btn-secondary" id="submitInput">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Lack of Input -->
+    <div class="modal" tabindex="-1" role="dialog" id="no-input-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Missing Input!</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Please fill out all sections.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase  -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.0/firebase.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/javascript/app.js"></script>
+  </body>
+</html>

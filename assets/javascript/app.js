@@ -43,7 +43,7 @@ var uiConfig = {
     },
     // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
     signInFlow: 'popup',
-    signInSuccessUrl: 'https://joverlee521.github.io/Train-Scheduler/',
+    signInSuccessUrl: 'https://joverlee521.github.io/Train-Scheduler/logged-in.html',
     signInOptions: [
       // Leave the lines as is for the providers you want to offer your users.
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
