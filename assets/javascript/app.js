@@ -10,9 +10,6 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
-// Initialize the FirebaseUI Widget using Firebase.
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-
 // Variable Declarations
 var trainName = "";
 var destination = "";
@@ -26,32 +23,6 @@ var hour;
 var amPM;
 var minute;
 var newTime = 0;
-
-var uiConfig = {
-    callbacks: {
-      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        // User successfully signed in.
-        // Return type determines whether we continue the redirect automatically
-        // or whether we leave that to developer to handle.
-        return true;
-      },
-      uiShown: function() {
-        // The widget is rendered.
-        // Hide the loader.
-        document.getElementById('loader').style.display = 'none';
-      }
-    },
-    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-    signInFlow: 'popup',
-    signInSuccessUrl: 'https://joverlee521.github.io/Train-Scheduler/logged-in.html',
-    signInOptions: [
-      // Leave the lines as is for the providers you want to offer your users.
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.GithubAuthProvider.PROVIDER_ID,
-    ],
-};
-$("#sign-in-modal").modal();
-ui.start('#firebaseui-auth-container', uiConfig);
 
 // Converts Military Time to 12 Hour Time
 function convertTo12Time(time){
